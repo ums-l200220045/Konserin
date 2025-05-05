@@ -2,8 +2,25 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/daftar', function () {
+    return view('daftarkonser');
+});
+
+Route::get('/detail', function () {
+    return view('detailkonser');
+});
+
+Route::get('/co', function () {
+    return view('checkout');
+});
+
+Route::get('/regis', function () {
+    return view('formregis');
 });
 
 Route::middleware([
