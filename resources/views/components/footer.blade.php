@@ -1,4 +1,4 @@
-<footer class="bg-[#2b1c1c] text-white">
+<footer id="footer" class="bg-[#2b1c1c] text-white">
 
     <!-- Section Atas: 3 Kolom -->
     <div class="bg-[#782e2e] px-8 py-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">

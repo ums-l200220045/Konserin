@@ -5,7 +5,7 @@
     <div class="max-w-7xl mx-auto px-4">
 
         <!-- Judul -->
-        <h2 class="text-center text-2xl font-bold mb-4" style="font-family: 'Pacifico', cursive;">KONSER YANG SEDANG TRENDING !!!</h2>
+        <h2 class="text-center text-2xl font-bold mb-4" style="font-family: 'Pacifico', cursive;">DAFTAR KONSER !!!</h2>
 
         <!-- Search bar -->
         <div class="flex justify-start mb-8">
