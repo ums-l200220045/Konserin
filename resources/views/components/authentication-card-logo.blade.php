@@ -1,3 +1,3 @@
 <a href="/">
-    <img src="images/logo konserin2.png" alt="Logo Konserin" class="h-15 w-15" />
+    <img src="/images/logo konserin4.png" class="h-28">
 </a>

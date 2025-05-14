@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone_number')->unique(); // Verifikasi nomor HP
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable(); // nullable jika login via OTP
+            $table->enum('role', ['super_admin', 'admin', 'user'])->default('user');
+            $table->string('otp_code')->nullable(); // Simpan kode OTP
+            $table->timestamp('otp_expires_at')->nullable(); // OTP kadaluarsa
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
-            $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
         });
 
@@ -37,7 +39,19 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+        
+        \Illuminate\Support\Facades\DB::table('users')->insert([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@example.com',
+            'phone_number' => '08212345678',
+            'password' => \Illuminate\Support\Facades\Hash::make('superadmin'),
+            'role' => 'super_admin',
+            'email_verified_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
+
 
     /**
      * Reverse the migrations.

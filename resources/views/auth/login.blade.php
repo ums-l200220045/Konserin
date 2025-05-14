@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-[#843737] min-h-screen py-10 px-4 md:px-20">
+<div class="bg-[#843737] min-h-screen flex justify-center items-center py-10 px-4 md:px-20">
     <x-guest-layout>
         <div class="max-w-md mx-auto">
             <x-authentication-card>

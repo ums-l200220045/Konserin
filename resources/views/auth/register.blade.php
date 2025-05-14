@@ -26,8 +26,8 @@
                     </div>
 
                     <div class="mt-4">
-                        <x-label for="no_telp" value="{{ __('No. Telepon') }}" />
-                        <x-input id="no_telp" class="block mt-1 w-full" type="text" name="no_telp" required autocomplete="tel" />
+                        <x-label for="phone_number" value="{{ __('No. Telepon') }}" />
+                        <x-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" required autocomplete="tel" />
                     </div>
 
                     <div class="mt-4">
