@@ -115,6 +115,7 @@ class AdminController extends Controller
         }
 
         // Update status sesuai kuota & tanggal
+        $concert->refresh();
         $concert->updateStatus();
 
         return redirect()->route('dashboard.admin.konser')->with('success', 'Konser berhasil diperbarui!');

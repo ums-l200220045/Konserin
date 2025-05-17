@@ -26,12 +26,12 @@ class Concert extends Model
     {
         $now = now();
 
-        if ($this->quota === 0 && $this->end_date > $now) {
-            $this->status = 'sold_out';
-        } elseif ($this->quota > 0 && $this->end_date > $now) {
-            $this->status = 'active';
-        } elseif ($this->end_date <= $now) {
+        if ($this->end_date <= $now) {
             $this->status = 'ended';
+        } elseif ($this->quota === 0) {
+            $this->status = 'sold_out';
+        } else {
+            $this->status = 'active';
         }
 
         $this->save();
