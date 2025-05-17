@@ -57,13 +57,20 @@ Route::middleware([
 
         return match ($user->role) {
             'super_admin' => redirect('/dashboard/super-admin'),
-            'admin' => redirect('/dashboard/admin'),
+            'admin' => redirect('/admin/concerts'),
             'user' => redirect('/home'),
             default => abort(403),
         };
     });
-
+    Route::middleware('role:user')->get('/checkout', [UserController::class, 'index']);
     Route::middleware('role:super_admin')->get('/dashboard/super-admin', [SuperAdminController::class, 'index']);
-    Route::middleware('role:admin')->get('/dashboard/admin', [AdminController::class, 'index']);
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
+        Route::get('/concerts', [AdminController::class, 'index'])->name('dashboard.admin.konser');
+        Route::get('/concerts/create', [AdminController::class, 'create'])->name('dashboard.admin.create');
+        Route::post('/concerts', [AdminController::class, 'store'])->name('concerts.store');
+        Route::get('/concerts/{id}/edit', [AdminController::class, 'edit'])->name('admin.edit');
+        Route::put('/concerts/{id}', [AdminController::class, 'update'])->name('admin.update');
+        Route::delete('/concerts/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
+    });
     Route::middleware('role:user', 'verified')->get('/home', [UserController::class, 'index']);
 });

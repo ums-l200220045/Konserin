@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
+use Illuminate\Auth\Events\Registered;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -32,6 +33,8 @@ class CreateNewUser implements CreatesNewUsers
             'email' => $input['email'],
             'phone_number' => $input['phone_number'],
             'password' => Hash::make($input['password']),
+            'role' => 'user',
         ]);
+        event(new Registered($user));
     }
 }

@@ -6,12 +6,21 @@
         </div>
 
         <nav class="space-x-6 hidden md:block">
-            <a href="/" class="hover:underline">BERANDA</a>
-            <a href="/daftar" class="hover:underline">KONSER</a>
-            <a href="#footer" class="hover:underline">BANTUAN</a>
-
             @auth
-                <!-- Jika sudah login -->
+                @php
+                    $role = Auth::user()->role;
+                @endphp
+
+                @if ($role === 'super_admin' || $role === 'admin')
+                    <a href="/dashboard" class="hover:underline">DASHBOARD</a>
+                @elseif ($role === 'user')
+                    <a href="/" class="hover:underline">BERANDA</a>
+                    <a href="/daftar" class="hover:underline">KONSER</a>
+                    <a href="/co" class="hover:underline">PESANAN</a>
+                    <a href="#footer" class="hover:underline">BANTUAN</a>
+                @endif
+
+                <!-- Dropdown User Info -->
                 <div class="relative inline-block">
                     <button onclick="toggleDropdown()" class="bg-gray-300 text-gray-800 hover:bg-gray-400 px-4 py-1 rounded-full font-semibold">
                         {{ Auth::user()->name }}
@@ -29,6 +38,10 @@
                 </div>
             @else
                 <!-- Jika belum login -->
+                <a href="/" class="hover:underline">BERANDA</a>
+                <a href="/daftar" class="hover:underline">KONSER</a>
+                <a href="#footer" class="hover:underline">BANTUAN</a>
+
                 <a href="/register" class="bg-red-600 hover:bg-red-700 px-4 py-1 rounded-full font-semibold">DAFTAR</a>
                 <a href="/login" class="bg-gray-300 text-gray-800 hover:bg-gray-400 px-4 py-1 rounded-full font-semibold">MASUK</a>
             @endauth

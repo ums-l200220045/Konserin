@@ -18,7 +18,7 @@ class RoleMiddleware
             // Redirect fallback ke dashboard sesuai peran
             $redirect = match (Auth::user()->role) {
                 'super_admin' => '/dashboard/super-admin',
-                'admin' => '/dashboard/admin',
+                'admin' => '/dashboard/admin/konser',
                 'user' => '/home',
                 default => '/',
             };
