@@ -16,9 +16,8 @@ Route::get('/home', function () {
     return view('homeutama');
 });
 
-Route::get('/daftar', function () {
-    return view('daftarkonser');
-});
+Route::get('/daftar', [UserController::class, 'index'])->name('concerts.list');
+Route::get('/search-concerts', [UserController::class, 'search'])->name('concerts.search');
 
 Route::get('/detail', function () {
     return view('detailkonser');
@@ -62,7 +61,7 @@ Route::middleware([
             default => abort(403),
         };
     });
-    Route::middleware('role:user')->get('/checkout', [UserController::class, 'index']);
+    Route::middleware('role:user')->get('/daftar-konser', [UserController::class, 'index']);
     Route::middleware('role:super_admin')->get('/dashboard/super-admin', [SuperAdminController::class, 'index']);
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/concerts', [AdminController::class, 'index'])->name('dashboard.admin.konser');
