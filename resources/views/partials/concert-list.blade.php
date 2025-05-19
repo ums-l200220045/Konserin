@@ -68,6 +68,38 @@
                                         {{ $concert->description }}
                                     </p>
                                 </div>
+                                <div class="mt-6">
+                                    @auth
+                                        <form action="{{ route('tickets.form') }}" method="GET" onsubmit="return validateQty({{ $concert->quota }}, {{ $concert->id }})">
+                                            <input type="hidden" name="concert_id" value="{{ $concert->id }}">
+
+                                            <label class="block text-sm font-semibold mb-1">Jumlah Tiket:</label>
+                                            <select name="quantity" id="qty-{{ $concert->id }}" 
+                                                class="mb-2 border rounded px-3 py-1 w-full" 
+                                                onchange="updateTotalPrice({{ $concert->id }}, {{ $concert->price }})">
+                                                @for ($i = 1; $i <= min(4, $concert->quota); $i++)
+                                                    <option value="{{ $i }}">{{ $i }} Tiket</option>
+                                                @endfor
+                                            </select>
+
+                                            <p class="text-sm font-medium">Total Harga: 
+                                                <span id="total-{{ $concert->id }}">
+                                                    Rp {{ number_format($concert->price, 0, ',', '.') }}
+                                                </span>
+                                            </p>
+
+                                            <button type="submit" 
+                                                class="mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-full w-full">
+                                                Pesan Tiket
+                                            </button>
+                                        </form>
+                                    @else
+                                        <a href="{{ route('login') }}" 
+                                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-full block text-center">
+                                            Login untuk Pesan Tiket
+                                        </a>
+                                    @endauth
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -16,7 +16,7 @@
                 @elseif ($role === 'user')
                     <a href="/" class="hover:underline">BERANDA</a>
                     <a href="/daftar" class="hover:underline">KONSER</a>
-                    <a href="/co" class="hover:underline">PESANAN</a>
+                    <a href="{{ route('tickets.mine') }}" class="hover:underline">TIKET SAYA</a>
                     <a href="#footer" class="hover:underline">BANTUAN</a>
                 @endif
 

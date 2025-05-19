@@ -41,5 +41,20 @@
                 document.getElementById('concert-list').innerHTML = html;
             });
     });
+
+        function updateTotalPrice(id, price) {
+        const qty = document.getElementById('qty-' + id).value;
+        const total = price * qty;
+        document.getElementById('total-' + id).innerText = 'Rp ' + total.toLocaleString('id-ID');
+    }
+
+    function validateQty(maxQty, id) {
+        const selected = parseInt(document.getElementById('qty-' + id).value);
+        if (selected > maxQty) {
+            alert('Jumlah tiket melebihi kuota tersedia.');
+            return false;
+        }
+        return true;
+    }
 </script>
 @endsection

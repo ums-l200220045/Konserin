@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TicketController;
 
 Route::get('/', function () {
     return view('homeutama');
@@ -23,9 +24,10 @@ Route::get('/detail', function () {
     return view('detailkonser');
 });
 
-Route::get('/co', function () {
-    return view('checkout');
-});
+Route::get('/checkout', [TicketController::class, 'showCheckoutForm'])->name('tickets.form');
+Route::post('/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
+Route::middleware(['auth', 'verified'])->get('/my-tickets', [TicketController::class, 'userTickets'])->name('tickets.mine');
+Route::middleware(['auth', 'verified'])->post('/pay-ticket/{id}', [TicketController::class, 'simulatePayment'])->name('tickets.pay');
 
 Route::get('/regis', function () {
     return view('formregis');
