@@ -24,10 +24,10 @@
             </div>
         </button>
 
-                <!-- Modal -->
-                <div id="modal-{{ $concert->id }}" 
-                    class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden items-center justify-center" 
-                    onclick="hideModal({{ $concert->id }})">
+        <!-- Modal -->
+        <div id="modal-{{ $concert->id }}" 
+            class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden items-center justify-center" 
+                onclick="hideModal({{ $concert->id }})">
                     
                     <div onclick="event.stopPropagation()" 
                         class="bg-white w-full max-w-3xl rounded-lg shadow-xl p-6 relative transform transition-all duration-300 scale-100">
@@ -70,13 +70,14 @@
                                 </div>
                                 <div class="mt-6">
                                     @auth
-                                        <form action="{{ route('tickets.form') }}" method="GET" onsubmit="return validateQty({{ $concert->quota }}, {{ $concert->id }})">
+                                        <form action="{{ route('tickets.check') }}" method="POST" onsubmit="return validateQty({{ $concert->quota }}, {{ $concert->id }})">
+                                            @csrf
                                             <input type="hidden" name="concert_id" value="{{ $concert->id }}">
 
                                             <label class="block text-sm font-semibold mb-1">Jumlah Tiket:</label>
                                             <select name="quantity" id="qty-{{ $concert->id }}" 
-                                                class="mb-2 border rounded px-3 py-1 w-full" 
-                                                onchange="updateTotalPrice({{ $concert->id }}, {{ $concert->price }})">
+                                                    class="mb-2 border rounded px-3 py-1 w-full" 
+                                                    onchange="updateTotalPrice({{ $concert->id }}, {{ $concert->price }})">
                                                 @for ($i = 1; $i <= min(4, $concert->quota); $i++)
                                                     <option value="{{ $i }}">{{ $i }} Tiket</option>
                                                 @endfor

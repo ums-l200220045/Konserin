@@ -4,34 +4,24 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TicketController;
 
-Route::get('/', function () {
-    return view('homeutama');
-});
 
-Route::get('/home', function () {
-    return view('homeutama');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/daftar', [UserController::class, 'index'])->name('concerts.list');
 Route::get('/search-concerts', [UserController::class, 'search'])->name('concerts.search');
 
-Route::get('/detail', function () {
-    return view('detailkonser');
-});
 
 Route::get('/checkout', [TicketController::class, 'showCheckoutForm'])->name('tickets.form');
+Route::middleware(['auth', 'verified'])->post('/tickets/check', [TicketController::class, 'checkTicketAvailability'])->name('tickets.check');
 Route::post('/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
 Route::middleware(['auth', 'verified'])->get('/my-tickets', [TicketController::class, 'userTickets'])->name('tickets.mine');
 Route::middleware(['auth', 'verified'])->post('/pay-ticket/{id}', [TicketController::class, 'simulatePayment'])->name('tickets.pay');
-
-Route::get('/regis', function () {
-    return view('formregis');
-});
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

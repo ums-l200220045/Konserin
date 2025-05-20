@@ -31,7 +31,7 @@
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
-
+    
     document.getElementById('search').addEventListener('input', function() {
         const query = this.value;
 
@@ -42,7 +42,7 @@
             });
     });
 
-        function updateTotalPrice(id, price) {
+    function updateTotalPrice(id, price) {
         const qty = document.getElementById('qty-' + id).value;
         const total = price * qty;
         document.getElementById('total-' + id).innerText = 'Rp ' + total.toLocaleString('id-ID');
@@ -51,7 +51,14 @@
     function validateQty(maxQty, id) {
         const selected = parseInt(document.getElementById('qty-' + id).value);
         if (selected > maxQty) {
-            alert('Jumlah tiket melebihi kuota tersedia.');
+            Toastify({
+                text: "Jumlah tiket melebihi kuota tersedia.",
+                duration: 3000,
+                gravity: "top", 
+                position: "center", 
+                backgroundColor: "#e3342f",
+                stopOnFocus: true
+            }).showToast();
             return false;
         }
         return true;

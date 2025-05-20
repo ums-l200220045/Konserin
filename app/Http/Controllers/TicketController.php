@@ -8,6 +8,12 @@ use App\Models\Ticket;
 use App\Models\TicketDetail;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
+use chillerlan\QRCode\Output\QRCodeOutputType;
+use chillerlan\QRCode\Data\QRCodeErrorCorrectionLevel;
+
 
 class TicketController extends Controller
 {
@@ -69,15 +75,36 @@ class TicketController extends Controller
             'status' => 'pending',
         ]);
 
-        // Simpan data setiap pemegang tiket
+
+        $options = new QROptions([
+            'version'          => 7,
+            'outputType'       => QRCode::OUTPUT_IMAGE_PNG,
+            'eccLevel'         => QRCode::ECC_L,
+            'scale'            => 8,
+            'margin'           => 2,
+            'imageBase64'      => false,
+            'imageTransparent' => false,
+        ]);
+
+        $qrcode = new QRCode($options);
+
         foreach ($request->holders as $holder) {
+            $qrContent = "TIKET-{$ticket->id}|NIK:{$holder['nik']}|NAMA:{$holder['name']}";
+            $pngData = $qrcode->render($qrContent);
+            $fileName = 'qr_'.md5($qrContent).'.png';
+            $path = 'qr_codes/'.$fileName;
+            
+            // Simpan file
+            Storage::disk('public')->put($path, $pngData);
+
             TicketDetail::create([
                 'ticket_id' => $ticket->id,
                 'holder_name' => $holder['name'],
                 'holder_nik' => $holder['nik'],
-                'qr_code' => 'QR-' . uniqid(),
+                'qr_code' => Storage::url($path),
             ]);
         }
+
 
         // Simpan data pembayaran
         Payment::create([
@@ -101,7 +128,7 @@ class TicketController extends Controller
 
     public function userTickets()
     {
-        $tickets = Ticket::with('concert', 'payment')
+        $tickets = Ticket::with(['concert', 'payment', 'details'])
             ->where('user_id', Auth::id())
             ->orderByDesc('created_at')
             ->get();
@@ -128,5 +155,35 @@ class TicketController extends Controller
         }
 
         return back()->with('error', 'Pembayaran sudah dilakukan atau tidak valid.');
+    }
+
+    public function checkTicketAvailability(Request $request)
+    {
+        $request->validate([
+            'concert_id' => 'required|exists:concerts,id',
+            'quantity' => 'required|integer|min:1|max:4',
+        ]);
+
+        $concert = Concert::findOrFail($request->concert_id);
+
+        // Cek kuota
+        if ($concert->quota < $request->quantity) {
+            return back()->with('error', 'Kuota tiket tidak mencukupi.');
+        }
+
+        // Cek total tiket yang pernah dibeli user
+        $existing = Ticket::where('user_id', Auth::id())
+            ->where('concert_id', $concert->id)
+            ->sum('quantity');
+
+        if ($existing + $request->quantity > 4) {
+            return back()->with('error', 'Maksimal pembelian tiket per konser adalah 4.');
+        }
+
+        // Jika lolos semua, redirect ke checkout
+        return redirect()->route('tickets.form', [
+            'concert_id' => $concert->id,
+            'quantity' => $request->quantity,
+        ]);
     }
 }

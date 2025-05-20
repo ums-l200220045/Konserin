@@ -1,9 +1,11 @@
 <header class="bg-[#2b1c1c] text-white shadow-md">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-            <img src="/images/logo konserin4.png" alt="logo" class="h-12 w-12">
-            <h1 class="text-xl font-bold">KONSER'IN</h1>
-        </div>
+        <a href="/">
+            <div class="flex items-center space-x-2">
+                <img src="/images/logo konserin4.png" alt="logo" class="h-12 w-12">
+                <h1 class="text-xl font-bold">KONSER'IN</h1>
+            </div>
+        </a>
 
         <nav class="space-x-6 hidden md:block">
             @auth
