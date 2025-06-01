@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
+use App\Models\User;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -41,6 +44,17 @@ class FortifyServiceProvider extends ServiceProvider
 
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
+        });
+
+        // Tambah event listener di sini:
+        Event::listen(Login::class, function ($event) {
+            $user = $event->user;
+
+            // Reset OTP status setiap login
+            $user->otp_verified = false;
+            $user->otp_code = rand(100000, 999999);
+            $user->otp_expires_at = now()->addMinutes(5);
+            $user->save();
         });
     }
 }

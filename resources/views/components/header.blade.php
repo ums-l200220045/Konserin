@@ -10,27 +10,34 @@
         <nav class="space-x-6 hidden md:block">
             @auth
                 @php
-                    $role = Auth::user()->role;
+                    $user = Auth::user();
+                    $role = $user->role;
+                    $otpVerified = $user->otp_verified;
                 @endphp
 
                 @if ($role === 'super_admin' || $role === 'admin')
                     <a href="/dashboard" class="hover:underline">DASHBOARD</a>
+
                 @elseif ($role === 'user')
-                    <a href="/" class="hover:underline">BERANDA</a>
-                    <a href="/daftar" class="hover:underline">KONSER</a>
-                    <a href="{{ route('tickets.mine') }}" class="hover:underline">TIKET SAYA</a>
-                    <a href="#footer" class="hover:underline">BANTUAN</a>
+                    @if ($otpVerified)
+                        <a href="/" class="hover:underline">BERANDA</a>
+                        <a href="/daftar" class="hover:underline">KONSER</a>
+                        <a href="{{ route('tickets.mine') }}" class="hover:underline">TIKET SAYA</a>
+                        <a href="#footer" class="hover:underline">BANTUAN</a>
+                    @else
+                        <span class="text-gray-400 cursor-not-allowed">Verifikasi OTP Diperlukan</span>
+                    @endif
                 @endif
 
                 <!-- Dropdown User Info -->
                 <div class="relative inline-block">
                     <button onclick="toggleDropdown()" class="bg-gray-300 text-gray-800 hover:bg-gray-400 px-4 py-1 rounded-full font-semibold">
-                        {{ Auth::user()->name }}
+                        {{ $user->name }}
                     </button>
                     <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg z-50">
                         <div class="px-4 py-2 border-b">
-                            <p class="font-bold">{{ Auth::user()->name }}</p>
-                            <p class="text-sm text-gray-600">{{ Auth::user()->email }}</p>
+                            <p class="font-bold">{{ $user->name }}</p>
+                            <p class="text-sm text-gray-600">{{ $user->email }}</p>
                         </div>
                         <form method="POST" action="{{ route('logout') }}" class="block">
                             @csrf

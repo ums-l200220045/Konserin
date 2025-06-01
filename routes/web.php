@@ -9,43 +9,79 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\Auth\OTPVerificationController;
 
-
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Konser publik
 Route::get('/daftar', [UserController::class, 'index'])->name('concerts.list');
 Route::get('/search-concerts', [UserController::class, 'search'])->name('concerts.search');
 
+/*
+|--------------------------------------------------------------------------
+| Tiket & Pembayaran (User Authenticated)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
+    Route::get('/checkout', [TicketController::class, 'showCheckoutForm'])->name('tickets.form');
+    Route::post('/tickets/check', [TicketController::class, 'checkTicketAvailability'])->name('tickets.check');
+    Route::post('/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
+    Route::get('/my-tickets', [TicketController::class, 'userTickets'])->name('tickets.mine');
+    Route::post('/pay-ticket/{id}', [TicketController::class, 'simulatePayment'])->name('tickets.pay');
+});
 
-Route::get('/checkout', [TicketController::class, 'showCheckoutForm'])->name('tickets.form');
-Route::middleware(['auth', 'verified'])->post('/tickets/check', [TicketController::class, 'checkTicketAvailability'])->name('tickets.check');
-Route::post('/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
-Route::middleware(['auth', 'verified'])->get('/my-tickets', [TicketController::class, 'userTickets'])->name('tickets.mine');
-Route::middleware(['auth', 'verified'])->post('/pay-ticket/{id}', [TicketController::class, 'simulatePayment'])->name('tickets.pay');
+/*
+|--------------------------------------------------------------------------
+| Email Verification Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
 
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/dashboard');
+    })->middleware(['signed'])->name('verification.verify');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/dashboard');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('message', 'Verification link sent!');
+    })->middleware('throttle:6,1')->name('verification.send');
+});
 
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return back()->with('message', 'Verification link sent!');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+/*
+|--------------------------------------------------------------------------
+| OTP Verification Routes (untuk role:user)
+|--------------------------------------------------------------------------
+*/
 
 
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes (Jetstream + Role)
+|--------------------------------------------------------------------------
+*/
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
 ])->group(function () {
+
+
+    Route::get('/verify-otp', [OTPVerificationController::class, 'showForm'])->name('otp.verify.form');
+    Route::post('/verify-otp', [OTPVerificationController::class, 'verify'])->name('otp.verify.submit');
+    Route::get('/resend-otp', [OTPVerificationController::class, 'resend'])->name('otp.resend');
+    
     // Redirect berdasarkan role setelah login
     Route::get('/dashboard', function () {
         $user = Auth::user();
-
         return match ($user->role) {
             'super_admin' => redirect('/dashboard/super-admin'),
             'admin' => redirect('/admin/concerts'),
@@ -53,8 +89,19 @@ Route::middleware([
             default => abort(403),
         };
     });
-    Route::middleware('role:user')->get('/daftar-konser', [UserController::class, 'index']);
-    Route::middleware('role:super_admin')->get('/dashboard/super-admin', [SuperAdminController::class, 'index']);
+
+    // User routes (OTP wajib diverifikasi)
+    Route::middleware(['role:user', 'verified', 'otp.verified'])->group(function () {
+        Route::get('/home', [UserController::class, 'index'])->name('user.home');
+        Route::get('/daftar-konser', [UserController::class, 'index'])->name('user.konser');
+    });
+
+    // Super Admin routes
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/dashboard/super-admin', [SuperAdminController::class, 'index'])->name('superadmin.dashboard');
+    });
+
+    // Admin routes
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/concerts', [AdminController::class, 'index'])->name('dashboard.admin.konser');
         Route::get('/concerts/create', [AdminController::class, 'create'])->name('dashboard.admin.create');
@@ -63,5 +110,4 @@ Route::middleware([
         Route::put('/concerts/{id}', [AdminController::class, 'update'])->name('admin.update');
         Route::delete('/concerts/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
     });
-    Route::middleware('role:user', 'verified')->get('/home', [UserController::class, 'index']);
 });
