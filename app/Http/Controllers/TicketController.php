@@ -11,8 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
-use chillerlan\QRCode\Output\QRCodeOutputType;
-use chillerlan\QRCode\Data\QRCodeErrorCorrectionLevel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class TicketController extends Controller
@@ -101,7 +100,7 @@ class TicketController extends Controller
                 'ticket_id' => $ticket->id,
                 'holder_name' => $holder['name'],
                 'holder_nik' => $holder['nik'],
-                'qr_code' => Storage::url($path),
+                'qr_code' => $path,
             ]);
         }
 
@@ -185,5 +184,21 @@ class TicketController extends Controller
             'concert_id' => $concert->id,
             'quantity' => $request->quantity,
         ]);
+    }
+
+    public function download(Ticket $ticket)
+    {
+        // Pastikan user hanya bisa download tiket miliknya
+        if ($ticket->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Load detail tiket
+        $ticket->load('concert', 'details');
+
+        // Kirim ke view PDF
+        $pdf = Pdf::loadView('tickets.pdf', ['ticket' => $ticket]);
+
+        return $pdf->download('tiket_' . $ticket->id . '.pdf');
     }
 }

@@ -47,7 +47,7 @@
                                 <form action="{{ route('tickets.pay', $ticket->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
-                                        Simulasikan Pembayaran
+                                        Bayar
                                     </button>
                                 </form>
                             @endif
@@ -135,6 +135,15 @@
                         <div class="mt-6 pt-4 border-t text-center">
                             <p class="text-gray-500 text-sm">ID Tiket: <span class="font-medium" x-text="selectedTicket.id"></span></p>
                             <p class="text-gray-500 text-sm mt-1" x-text="'Tanggal Pemesanan: ' + new Date(selectedTicket.created_at).toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })"></p>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <a 
+                                :href="`/tickets/download/${selectedTicket.id}`" 
+                                target="_blank"
+                                class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                            >
+                                Download Tiket PDF
+                            </a>
                         </div>
                     </div>
                 </template>

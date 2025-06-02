@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
     Route::post('/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
     Route::get('/my-tickets', [TicketController::class, 'userTickets'])->name('tickets.mine');
     Route::post('/pay-ticket/{id}', [TicketController::class, 'simulatePayment'])->name('tickets.pay');
+    Route::get('/tickets/download/{ticket}', [TicketController::class, 'download'])->name('tickets.download');
 });
 
 /*
@@ -97,8 +98,17 @@ Route::middleware([
     });
 
     // Super Admin routes
-    Route::middleware('role:super_admin')->group(function () {
+    Route::middleware('auth', 'role:super_admin')->group(function () {
+        // Dashboard Super Admin
         Route::get('/dashboard/super-admin', [SuperAdminController::class, 'index'])->name('superadmin.dashboard');
+
+        // CRUD User
+        Route::get('/superadmin/users', [SuperAdminController::class, 'index'])->name('superadmin.users.index');
+        Route::get('/superadmin/users/create', [SuperAdminController::class, 'create'])->name('superadmin.users.create');
+        Route::post('/superadmin/users', [SuperAdminController::class, 'store'])->name('superadmin.users.store');
+        Route::get('/superadmin/users/{user}/edit', [SuperAdminController::class, 'edit'])->name('superadmin.users.edit');
+        Route::put('/superadmin/users/{user}', [SuperAdminController::class, 'update'])->name('superadmin.users.update');
+        Route::delete('/superadmin/users/{user}', [SuperAdminController::class, 'destroy'])->name('superadmin.users.destroy');
     });
 
     // Admin routes

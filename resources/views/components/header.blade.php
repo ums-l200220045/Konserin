@@ -16,7 +16,7 @@
                 @endphp
 
                 @if ($role === 'super_admin' || $role === 'admin')
-                    <a href="/dashboard" class="hover:underline">DASHBOARD</a>
+                    <a href="/dashboard/super-admin" class="hover:underline">DASHBOARD</a>
 
                 @elseif ($role === 'user')
                     @if ($otpVerified)
