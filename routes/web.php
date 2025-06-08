@@ -10,47 +10,32 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\Auth\OTPVerificationController;
+use Illuminate\Support\Facades\URL;
 
+// Tambahkan route ini untuk debugging
+Route::get('/debug-url', function () {
+    echo "<h1>URL Generation Debug (Laravel 12)</h1>";
+    echo "<hr>";
+    echo "<b>config('app.url'):</b> " . config('app.url') . "<br>";
+    echo "<b>URL::current():</b> " . URL::current() . "<br>";
+    echo "<b>url('/test'):</b> " . url('/test') . "<br>";
 
-use Illuminate\Support\Facades\Vite;
-use Illuminate\Support\Facades\File;
-
-Route::get('/debug-vite', function () {
-    // Set header agar output terlihat rapi
-    header('Content-Type: text/html; charset=utf-8');
-
-    echo "<h1>Vite Debug Info</h1>";
-
-    // 1. Cek variabel environment yang relevan
-    echo "<h2>Environment Check</h2>";
-    echo "<b>APP_ENV:</b> " . config('app.env') . "<br>";
-    echo "<b>APP_URL:</b> " . config('app.url') . "<br>";
-    echo "<b>Vite Hot Reload Server:</b> " . (env('VITE_HOT_RELOAD_HOST') ?? 'Not Set') . "<br><br>";
-
-    // 2. Cek keberadaan dan keterbacaan manifest.json
-    echo "<h2>Manifest Check</h2>";
-    $manifestPath = public_path('build/manifest.json');
-    $manifestExists = File::exists($manifestPath);
-    echo "<b>Looking for manifest at:</b> " . $manifestPath . "<br>";
-    echo "<b>Manifest Exists?:</b> " . ($manifestExists ? '<span style="color:green; font-weight:bold;">YES</span>' : '<span style="color:red; font-weight:bold;">NO</span>') . "<br><br>";
-
-    // 3. Jika manifest ada, coba baca dan tampilkan isinya
-    if ($manifestExists) {
-        echo "<h3>Manifest Content:</h3>";
-        echo "<pre style='background-color:#f0f0f0; padding:10px; border:1px solid #ccc;'>" . htmlspecialchars(File::get($manifestPath)) . "</pre><br>";
-    }
-
-    // 4. Coba panggil helper Vite secara langsung
-    echo "<h2>Vite Helper Check</h2>";
-    echo "Trying to resolve: 'resources/css/app.css'<br>";
-    try {
-        $assetUrl = Vite::asset('resources/css/app.css');
-        echo "<b>Result:</b> <a href='" . $assetUrl . "' target='_blank'>" . htmlspecialchars($assetUrl) . "</a>";
-    } catch (\Exception $e) {
-        echo "<b style='color:red;'>Error calling Vite::asset():</b><br>";
-        echo "<pre style='background-color:#f0f0f0; padding:10px; border:1px solid #ccc;'>" . htmlspecialchars($e->getMessage()) . "</pre>";
+    // Cek apakah route verifikasi ada
+    if (Route::has('verification.verify')) {
+        echo "<b>route('verification.verify', ...):</b> " . route('verification.verify', ['id' => 1, 'hash' => 'dummyhash']) . "<br>";
+        echo "<hr>";
+        echo "<h3>Generated Signed URL:</h3>";
+        echo "<p style='word-wrap:break-word; background-color:#f0f0f0; padding:10px; border:1px solid #ccc;'>" . URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => 1, 'hash' => 'dummyhash']
+        ) . "</p>";
+    } else {
+        echo "<p style='color:red;'><b>Route 'verification.verify' not found.</b></p>";
     }
 });
+
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
