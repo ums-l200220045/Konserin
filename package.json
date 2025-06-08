@@ -15,16 +15,7 @@
         "laravel-vite-plugin": "^1.2.0",
         "postcss": "^8.4.32",
         "tailwindcss": "^3.4.17",
-        "vite": "^6.2.4"
-    },
-    "name": "konserin",
-    "version": "1.0.0",
-    "description": "<p align=\"center\"><a href=\"https://laravel.com\" target=\"_blank\"><img src=\"https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg\" width=\"400\" alt=\"Laravel Logo\"></a></p>",
-    "main": "postcss.config.js",
-    "directories": {
-        "test": "tests"
-    },
-    "dependencies": {
+        "vite": "^6.2.4",
         "ansi-regex": "^5.0.1",
         "ansi-styles": "^4.3.0",
         "any-promise": "^1.3.0",
@@ -71,7 +62,6 @@
         "foreground-child": "^3.3.1",
         "form-data": "^4.0.2",
         "fraction.js": "^4.3.7",
-        "fsevents": "^2.3.3",
         "function-bind": "^1.1.2",
         "get-caller-file": "^2.0.5",
         "get-intrinsic": "^1.3.0",
@@ -94,7 +84,6 @@
         "jackspeak": "^3.4.3",
         "jiti": "^2.4.2",
         "lightningcss": "^1.29.2",
-        "lightningcss-darwin-arm64": "^1.29.2",
         "lilconfig": "^3.1.3",
         "lines-and-columns": "^1.2.4",
         "lodash": "^4.17.21",
@@ -147,9 +136,7 @@
         "signal-exit": "^4.1.0",
         "source-map-js": "^1.2.1",
         "string-width": "^4.2.3",
-        "string-width-cjs": "^4.2.3",
         "strip-ansi": "^6.0.1",
-        "strip-ansi-cjs": "^6.0.1",
         "sucrase": "^3.35.0",
         "supports-color": "^8.1.1",
         "supports-preserve-symlinks-flag": "^1.0.0",
@@ -166,11 +153,19 @@
         "vite-plugin-full-reload": "^1.2.0",
         "which": "^2.0.2",
         "wrap-ansi": "^7.0.0",
-        "wrap-ansi-cjs": "^7.0.0",
         "y18n": "^5.0.8",
         "yaml": "^2.7.1",
         "yargs": "^17.7.2",
         "yargs-parser": "^21.1.1"
+    },
+    "name": "konserin",
+    "version": "1.0.0",
+    "description": "<p align=\"center\"><a href=\"https://laravel.com\" target=\"_blank\"><img src=\"https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg\" width=\"400\" alt=\"Laravel Logo\"></a></p>",
+    "main": "postcss.config.js",
+    "directories": {
+        "test": "tests"
+    },
+    "dependencies": {
     },
     "keywords": [],
     "author": "",
