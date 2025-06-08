@@ -120,7 +120,7 @@
                                         <p class="font-bold text-gray-500 mb-3">QR Code Tiket</p>
                                         <div class="p-3 bg-white rounded-lg border-2 border-gray-300">
                                             <img 
-                                                :src="detail.qr_code" 
+                                                :src="`/storage/${detail.qr_code}`" 
                                                 alt="QR Code" 
                                                 class="w-48 h-48 object-contain"
                                                 onerror="this.onerror=null;this.src='{{ asset('images/qr-error.png') }}'"
