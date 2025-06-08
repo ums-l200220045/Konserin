@@ -5,7 +5,7 @@
     "buildCommand": "composer install --optimize-autoloader --no-dev && npm install && npm run build && php artisan storage:link"
   },
   "deploy": {
-    "startCommand": "while ! mysqladmin ping -h$MYSQLHOST -P$MYSQLPORT -u$MYSQLUSER -p$MYSQLPASSWORD --silent; do echo 'Waiting for database connection...'; sleep 2; done && echo 'Database is ready, starting process.' && php artisan migrate:fresh --force --seed && php artisan cache:clear && php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan serve --host=0.0.0.0 --port=$PORT",
+    "startCommand": "php artisan migrate:fresh --force --seed && php artisan cache:clear && php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan serve --host=0.0.0.0 --port=$PORT",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
