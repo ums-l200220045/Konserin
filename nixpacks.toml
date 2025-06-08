@@ -1,5 +1,2 @@
-# nixpacks.toml
-
 [phases.setup]
-# "..." berarti "gunakan semua paket default", lalu tambahkan paket kita
-nixPkgs = ["...", "mariadb-client"]ß
+nixPkgs = ["...", "mariadb-client"]
