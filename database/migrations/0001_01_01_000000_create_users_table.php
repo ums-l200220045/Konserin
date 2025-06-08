@@ -39,30 +39,7 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
-        
-        \Illuminate\Support\Facades\DB::table('users')->insert([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@example.com',
-            'phone_number' => '08212345678',
-            'password' => \Illuminate\Support\Facades\Hash::make('superadmin'),
-            'role' => 'super_admin',
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        
-        \Illuminate\Support\Facades\DB::table('users')->insert([
-            'name' => 'Admin 1',
-            'email' => 'admin1@example.com',
-            'phone_number' => '08221345678',
-            'password' => \Illuminate\Support\Facades\Hash::make('admin111'),
-            'role' => 'admin',
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
     }
-
 
     /**
      * Reverse the migrations.
