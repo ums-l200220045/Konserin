@@ -1,5 +1,5 @@
 # nixpacks.toml
 
 [phases.setup]
-# Menambahkan mysql-client (via mariadb-client) agar perintah mysqladmin tersedia
-nixPkgs = ["mariadb-client"]
+# "..." berarti "gunakan semua paket default", lalu tambahkan paket kita
+nixPkgs = ["...", "mariadb-client"]ß
