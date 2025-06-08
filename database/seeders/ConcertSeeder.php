@@ -60,6 +60,7 @@ class ConcertSeeder extends Seeder
             [
                 'name' => 'Swifties Karaoke Party',
                 'description' => '"Swifties Karaoke Party" adalah acara karaoke yang fokus pada lagu-lagu Taylor Swift dan seringkali diselenggarakan oleh komunitas penggemar Taylor Swift (Swifties). Acara ini menyediakan wadah bagi para penggemar untuk bernyanyi bersama, merasakan kebersamaan, dan mungkin juga berbagi pengalaman galau atau emosi melalui lagu-lagu Taylor Swift.',
+                'venue' => 'Downtown Seturan, Yogyakarta',
                 'start_date' => '2025-10-05 20:00:00',
                 'end_date' => '2025-10-05 23:00:00',
                 'price' => 375000,
@@ -70,25 +71,19 @@ class ConcertSeeder extends Seeder
         ];
 
         foreach ($concerts as $concertData) {
-            $sourceImagePath = database_path('seed-images/' . $concertData['image_filename']);
-            $destinationImagePath = storage_path('app/' . $destinationPath . '/' . $concertData['image_filename']);
-
-            if (File::exists($sourceImagePath)) {
-                File::copy($sourceImagePath, $destinationImagePath);
-
-                Concert::create([
-                    'admin_id' => $admin->id,
-                    'name' => $concertData['name'],
-                    'description' => $concertData['description'],
-                    'venue' => $concertData['venue'],
-                    'start_date' => $concertData['start_date'],
-                    'end_date' => $concertData['end_date'],
-                    'price' => $concertData['price'],
-                    'quota' => $concertData['quota'],
-                    'image' => 'concert-images/' . $concertData['image_filename'],
-                    'status' => $concertData['status'],
-                ]);
-            }
+            Concert::create([
+                'admin_id' => $admin->id,
+                'name' => $concertData['name'],
+                'description' => $concertData['description'],
+                'venue' => $concertData['venue'],
+                'start_date' => $concertData['start_date'],
+                'end_date' => $concertData['end_date'],
+                'price' => $concertData['price'],
+                'quota' => $concertData['quota'],
+                'status' => $concertData['status'],
+                // Kita hanya menyimpan path relatif dari dalam folder public
+                'image' => 'images/concerts/' . $concertData['image_filename'],
+            ]);
         }
     }
 }
