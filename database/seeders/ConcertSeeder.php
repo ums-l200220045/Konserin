@@ -70,7 +70,7 @@ class ConcertSeeder extends Seeder
         ];
 
         foreach ($concerts as $concertData) {
-            $sourceImagePath = storage_path('app/public/seed-images/' . $concertData['image_filename']);
+            $sourceImagePath = database_path('seed-images/' . $concertData['image_filename']);
             $destinationImagePath = storage_path('app/' . $destinationPath . '/' . $concertData['image_filename']);
 
             if (File::exists($sourceImagePath)) {
