@@ -10,30 +10,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\Auth\OTPVerificationController;
-use Illuminate\Support\Facades\URL;
-
-// Tambahkan route ini untuk debugging
-Route::get('/debug-url', function () {
-    echo "<h1>URL Generation Debug (Laravel 12)</h1>";
-    echo "<hr>";
-    echo "<b>config('app.url'):</b> " . config('app.url') . "<br>";
-    echo "<b>URL::current():</b> " . URL::current() . "<br>";
-    echo "<b>url('/test'):</b> " . url('/test') . "<br>";
-
-    // Cek apakah route verifikasi ada
-    if (Route::has('verification.verify')) {
-        echo "<b>route('verification.verify', ...):</b> " . route('verification.verify', ['id' => 1, 'hash' => 'dummyhash']) . "<br>";
-        echo "<hr>";
-        echo "<h3>Generated Signed URL:</h3>";
-        echo "<p style='word-wrap:break-word; background-color:#f0f0f0; padding:10px; border:1px solid #ccc;'>" . URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => 1, 'hash' => 'dummyhash']
-        ) . "</p>";
-    } else {
-        echo "<p style='color:red;'><b>Route 'verification.verify' not found.</b></p>";
-    }
-});
 
 
 /*
@@ -52,7 +28,7 @@ Route::get('/search-concerts', [UserController::class, 'search'])->name('concert
 | Tiket & Pembayaran (User Authenticated)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
+Route::middleware(['auth', 'otp.verified'])->group(function () {
     Route::get('/checkout', [TicketController::class, 'showCheckoutForm'])->name('tickets.form');
     Route::post('/tickets/check', [TicketController::class, 'checkTicketAvailability'])->name('tickets.check');
     Route::post('/tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
@@ -66,29 +42,21 @@ Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
 | Email Verification Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
-    Route::get('/email/verify', function () {
-        return view('auth.verify-email');
-    })->name('verification.notice');
+// Route::middleware('auth')->group(function () {
+//     Route::get('/email/verify', function () {
+//         return view('auth.verify-email');
+//     })->name('verification.notice');
 
-    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-        $request->fulfill();
-        return redirect('/dashboard');
-    })->middleware(['signed'])->name('verification.verify');
+//     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//         $request->fulfill();
+//         return redirect('/dashboard');
+//     })->middleware(['signed'])->name('verification.verify');
 
-    Route::post('/email/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-        return back()->with('message', 'Verification link sent!');
-    })->middleware('throttle:6,1')->name('verification.send');
-});
-
-/*
-|--------------------------------------------------------------------------
-| OTP Verification Routes (untuk role:user)
-|--------------------------------------------------------------------------
-*/
-
-
+//     Route::post('/email/verification-notification', function (Request $request) {
+//         $request->user()->sendEmailVerificationNotification();
+//         return back()->with('message', 'Verification link sent!');
+//     })->middleware('throttle:6,1')->name('verification.send');
+// });
 
 /*
 |--------------------------------------------------------------------------
@@ -117,7 +85,7 @@ Route::middleware([
     });
 
     // User routes (OTP wajib diverifikasi)
-    Route::middleware(['role:user', 'verified', 'otp.verified'])->group(function () {
+    Route::middleware(['role:user', 'otp.verified'])->group(function () {
         Route::get('/home', [UserController::class, 'index'])->name('user.home');
         Route::get('/daftar-konser', [UserController::class, 'index'])->name('user.konser');
     });
